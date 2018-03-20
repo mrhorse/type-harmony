@@ -1,12 +1,13 @@
-# R-type - Responsive Type Foundation
+# Type Harmony - Responsive Type Foundation
 
-R-type exists (it really is a thing).
+Type harmony exists (it really is a thing).
 
-R-type is a responsive typography foundation that adheres to the following standards:
+Type harmony is a responsive typography foundation that adheres to the following standards:
 
-- Font sizes on the root element are declared in px and converted to % - this adheres to good accessibility practice as it works with native browser zoom
-- Otherwise font sizes are declared in px and converted rem's, with px fallback to support older browsers
+- Font sizes on the root element are declared in px and converted to %. This is good accessibility practice, it works with native browser zoom.
+- Otherwise font sizes are declared in px and converted to rems, with px fallback to support older browsers.
 - Line-heights are declared unitless, e.g. 1.4.
+- Vertical spacing may be added using the 'spacing' key.
 
 
 
@@ -14,7 +15,7 @@ R-type is a responsive typography foundation that adheres to the following stand
 
 This lib may well be subject to change, use at your own risk.
 
-R-type lists sass-breakpoint as a requirement. You'll also need a relatively new version of libsass on your project.
+Type harmony lists sass-breakpoint as a requirement. You'll also need a relatively new version of libsass on your project.
 
 Install via `npm install type-harmony --save`
 
