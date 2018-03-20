@@ -32,8 +32,8 @@
 // IMPORTANT
 // Add a media query merge plugin or the output could potentially be horrendous.
 //
-$r-type-set-vertical-rhythm: true !default;
-$r-type-font-map: (
+$harmonise-set-vertical-rhythm: true !default;
+$harmonise-font-map: (
   base: (
     null: 16px
   )
@@ -50,7 +50,6 @@ $r-type-font-map: (
   }
   @return $number;
 }
-
 
 
 //////////////////////
@@ -122,7 +121,7 @@ $r-type-font-map: (
   $properties: prepare-properties($properties);
 
   // Use root font size at this breakpoint to calculate properties in rems.
-  $root-map: map-get(map-get($r-type-font-map, base), $breakpoint);
+  $root-map: map-get(map-get($harmonise-font-map, base), $breakpoint);
   $root-font-size: null;
   $root-line-height: null;
 
@@ -141,7 +140,7 @@ $r-type-font-map: (
       font-size: $value + 0px; // Fallback. Should already be in px anyway.
       font-size: $font-size-rems + 0rem;
 
-      @if $r-type-set-vertical-rhythm AND $root-line-height AND map_has_key($properties, spacing)  {
+      @if $harmonise-set-vertical-rhythm AND $root-line-height AND map_has_key($properties, spacing)  {
         $spacing: $font-size-rems * $root-line-height;
         $multiplier: map_get($properties, spacing);
 
@@ -167,8 +166,8 @@ $r-type-font-map: (
 //
 // Set the font roots at html element level.
 //
-@mixin r-type-font-roots() {
-  $base: map_get($r-type-font-map, base);
+@mixin harmonise-roots() {
+  $base: map_get($harmonise-font-map, base);
 
   // Map = keyed properties.
   @each $breakpoint, $properties in $base {
@@ -196,11 +195,11 @@ $r-type-font-map: (
 // Fetch the corresponding element map from the base font map, output the
 // properties for the given breakpoints (fonts in REMs).
 //
-@mixin r-type($element) {
+@mixin harmonise-type($element) {
   // Find the corresponding element in font map. Using the base px value for
   // this breakpoint calculate the rem equivalents.
-  @if map-has_key($r-type-font-map, $element) {
-    $this-font-map: map-get($r-type-font-map, $element);
+  @if map-has_key($harmonise-font-map, $element) {
+    $this-font-map: map-get($harmonise-font-map, $element);
 
     @each $breakpoint, $properties in $this-font-map {
 

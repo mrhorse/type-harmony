@@ -12,18 +12,20 @@ R-type is a responsive typography foundation that adheres to the following stand
 
 ## Installation
 
+This lib may well be subject to change, use at your own risk.
+
 R-type lists sass-breakpoint as a requirement. You'll also need a relatively new version of libsass on your project.
 
-Install via `npm install r-type --save`
+Install via `npm install type-harmony --save`
 
-Include in your scss via `@import "r-type/scss/r-type";`.
+Include in your scss via `@import "~type-harmony/scss/type-harmony";`.
 
 ## Usage
 
 We start by defining a font map. Take for example the default map:
 
 ```
-$r-type-font-map: (
+$harmonise-font-map: (
   base: (
     null: 16px
   )
@@ -34,7 +36,7 @@ $r-type-font-map: (
 The 'base' key of the map is to be applied to the root level element. In this example we can apply to our root (html) element as such:
 ```
 html {
-	@include r-type-font-roots();
+	@include $harmonise-roots();
 }
 ```
 
