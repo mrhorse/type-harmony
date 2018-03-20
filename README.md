@@ -16,7 +16,7 @@ R-type lists sass-breakpoint as a requirement. You'll also need a relatively new
 
 Install via `npm install r-type --save`
 
-Include in your scss via `@import "r-type/scss/r-type;`.
+Include in your scss via `@import "r-type/scss/r-type";`.
 
 ## Usage
 
@@ -45,3 +45,14 @@ html {
 }
 ```
 
+More TBC.
+
+
+Mention...
+- Base breakpoints defining the breakpoints which will be used throughout.
+- Missing a breakpoint will result in inaccurate scaling at that breakpoint (no recalculation at new base font size)
+- Spacing as a multiple of font-size and line height
+
+
+TODO
+- Check this element's line-height before using the root line-height for vertical spacing.
