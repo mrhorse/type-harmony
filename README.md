@@ -15,11 +15,12 @@ Type harmony is a responsive typography foundation that adheres to the following
 
 This lib may well be subject to change, use at your own risk.
 
-Type harmony lists sass-breakpoint as a requirement. You'll also need a relatively new version of libsass on your project.
+Type harmony lists sass-breakpoint as a requirement (it's worth it). You'll also need a relatively new version of libsass on your project. *Recommended* is to install a media query packer (e.g. css-mqpacker) into your process chain - in the wrong hands this lib can potentially produce some bloat that's ripe for packing.
 
 Install via `npm install type-harmony --save`
 
 Include in your scss via `@import "~type-harmony/scss/type-harmony";`.
+
 
 ## Usage
 
