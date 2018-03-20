@@ -1,0 +1,26 @@
+{
+  "name": "r-type",
+  "version": "1.0.0",
+  "description": "A responsive type foundation.",
+  "main": "scss/_r-type.scss",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrhorse/r-type.git"
+  },
+  "keywords": [
+    "typography",
+    "responsive"
+  ],
+  "author": "Steven Horsey",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/mrhorse/r-type/issues"
+  },
+  "homepage": "https://github.com/mrhorse/r-type",
+  "dependencies": {
+    "breakpoint-sass": "^2.7.1"
+  }
+}

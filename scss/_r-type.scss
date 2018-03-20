@@ -1,0 +1,217 @@
+@import "~breakpoint-sass/stylesheets/breakpoint";
+
+//
+// Dealing with responsive type - % root sizes then REM sizes with PX fallbacks.
+// Fundamentally the issue is that REMs are only useful with responsive type
+// when there's an awareness about the base font size at different breakpoints.
+//
+// Requirements:
+// - Responsive (not fluid) type, changes at breakpoints.
+// - Control type from one map.
+// - Work in px as designers often design and deliver assets based in px, as
+//   well as the experience of working directly in rem's is terrible - setting
+//   html at 67.5% is not an accessible solution. Trial and error is no fun
+//   either.
+// - Base sizes set in % for maximum accessibility (zoomed browsers)
+// - Provide control at each breakpoint - we can't rely on modular scales, etc
+//   as designers etc should be able to request changes at will.
+// - The order of the breakpoints in the map is important as it dictates mobile
+//   first, etc.
+// - Pixel fallback for old browsers.
+// - Accepted property keys for an *element* set:
+//    - size (px),
+//    - leading (unitless),
+//    - margin-bottom (px)
+//
+// @TODO - Add margin control??
+// @TODO - ENSURE PX FALLBACK
+// @TODO - MAJOR ISSUE - When declaring with the base-font-map each element needs to use all the breakpoints that the base does, else the rems aren't recalculated for a missing breakpoint :( :(
+// @TODO - Typography margin bottom based on proportion of line-height
+// @TODO - Spacing (margin, padding) on non-typographic elements in rem, calculated based on current root.
+//
+// IMPORTANT
+// Add a media query merge plugin or the output could potentially be horrendous.
+//
+$r-type-set-vertical-rhythm: true !default;
+$r-type-font-map: (
+  base: (
+    null: 16px
+  )
+) !default;
+
+//
+// Remove the unit of a length
+//
+// @param {Number} $number - Number to remove unit from
+// @return {Number} - Unitless number
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+  @return $number;
+}
+
+
+
+//////////////////////
+//
+//  Prepare properties. If just a size is defined (no map) turn this into a map
+//  so we can process all properties the same.
+//
+// @param {Mixed} $properties - Map of properties OR a single size value.
+// @return {Map} - Map of properties.
+@function prepare-properties($properties) {
+  @if type-of($properties) != "map" {
+    // If properties isn't a map then it's just a single font-size value.
+    // Convert it to a map so we can process as if it were a map.
+    $properties: (
+      size: $properties
+    );
+  }
+  @return $properties;
+}
+
+//
+// Remove the unit of a length
+//
+// @param {Number} $value - Size in PX
+// @param {Number} $root-font-size - Root font size in PX
+// @return {Number} - Equivilent px size in REMs
+@function calculate-rems-from-base($value, $root-font-size) {
+  @return strip-unit($value) / strip-unit($root-font-size) + 0rem;
+}
+
+
+//////////////////////
+//
+// Populate root element (typically html) font property set. This method is
+// iterated over for each breakpoint, starting from null (mobile first).
+//
+@mixin populate-root-font-properties($properties: (), $breakpoint: null){
+
+  $properties: prepare-properties($properties);
+
+  // Root font-size in %. 100% is 16px, Maths is fun.
+  $root-font-size-percent: 100 / 16 * strip-unit(map_get($properties, size));
+
+  @each $property, $value in $properties {
+    @if $property == size {
+      font-size: $root-font-size-percent + 0%;
+    }
+    @if $property == leading {
+      line-height: $value;
+    }
+    // Don't add any more properties - root element should only deal with
+    // font size and leading.
+  }
+}
+
+
+//////////////////////
+//
+// Populate element property set. This method is iterated
+// over for each breakpoint, starting from null (mobile first).
+//
+// This method can be called to apply rem font-sizes from anywhere, just ensure
+// a valid breakpoint from the base map is supplied (or null for no media query)
+// Without the breakpoint SASS has no awareness of the REM base size, therefore
+// PX fallback output will fail big time.
+//
+@mixin populate-element-font-properties($properties: (), $breakpoint: null){
+
+  $properties: prepare-properties($properties);
+
+  // Use root font size at this breakpoint to calculate properties in rems.
+  $root-map: map-get(map-get($r-type-font-map, base), $breakpoint);
+  $root-font-size: null;
+  $root-line-height: null;
+
+  @if not $root-map { @error('Base font size for this breakpoint not found'); }
+  @if type-of($root-map) == "map" {
+    $root-font-size: map_get($root-map, size);
+    @if (map_has_key($root-map, leading)) {
+      $root-line-height: map_get($root-map, leading);
+    }
+  }
+
+
+  @each $property, $value in $properties {
+    $font-size-rems: strip-unit($value) / strip-unit($root-font-size);
+    @if $property == size {
+      font-size: $value + 0px; // Fallback. Should already be in px anyway.
+      font-size: $font-size-rems + 0rem;
+
+      @if $r-type-set-vertical-rhythm AND $root-line-height AND map_has_key($properties, spacing)  {
+        $spacing: $font-size-rems * $root-line-height;
+        $multiplier: map_get($properties, spacing);
+
+        $spacing_rems: strip-unit($spacing * $multiplier);
+        margin-bottom: $spacing_rems * $root-font-size + 0px;
+        margin-bottom: $spacing_rems + 0rem;
+      }
+    }
+    @if $property == leading {
+      line-height: $value;
+    }
+    @if $property == margin-bottom {
+      margin-bottom: $value + 0px; // Fallback. Should already be in px anyway.
+      margin-bottom: strip-unit($value) / strip-unit($root-font-size) + 0rem;
+    }
+
+    // Add more properties tbc, e.g. margins.
+  }
+}
+
+
+//////////////////////
+//
+// Set the font roots at html element level.
+//
+@mixin r-type-font-roots() {
+  $base: map_get($r-type-font-map, base);
+
+  // Map = keyed properties.
+  @each $breakpoint, $properties in $base {
+    @if type-of($properties) != "map" {
+      // If properties isn't a map then it's just a single font-size value.
+      // Convert it to a map so we can process as if it were a map.
+      $properties: (
+        size: $properties
+      );
+    }
+
+    @if $breakpoint {
+      @include breakpoint($breakpoint) {
+        @include populate-root-font-properties($properties, $breakpoint);
+      }
+    } @else {
+      // For null, i.e. mobile up.
+      @include populate-root-font-properties($properties, $breakpoint);
+    }
+  }
+}
+
+//////////////////////
+//
+// Fetch the corresponding element map from the base font map, output the
+// properties for the given breakpoints (fonts in REMs).
+//
+@mixin r-type($element) {
+  // Find the corresponding element in font map. Using the base px value for
+  // this breakpoint calculate the rem equivalents.
+  @if map-has_key($r-type-font-map, $element) {
+    $this-font-map: map-get($r-type-font-map, $element);
+
+    @each $breakpoint, $properties in $this-font-map {
+
+      @if $breakpoint {
+        @include breakpoint($breakpoint) {
+          @include populate-element-font-properties($properties, $breakpoint);
+        }
+      } @else {
+        // For null, i.e. mobile up.
+        @include populate-element-font-properties($properties, $breakpoint);
+      }
+    }
+  }
+}
