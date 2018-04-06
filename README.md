@@ -4,8 +4,9 @@ Type harmony exists (it really is a thing).
 
 Type harmony is a responsive typography foundation that adheres to the following standards:
 
-- Font sizes on the root element are declared in px and converted to %. This is good accessibility practice, it works with native browser zoom.
-- Otherwise font sizes are declared in px and converted to rems, with px fallback to support older browsers.
+- Mobile first
+- Font sizes on the root element are declared in px and converted to %. This is good accessibility practice - working in absolute values overwrites the user default values, i.e. it works with native browser zoom.
+- Similarly font sizes are declared in px and converted to rems, with px fallback to support older browsers.
 - Line-heights are declared unitless, e.g. 1.4.
 - Vertical spacing may be added using the 'spacing' key.
 
@@ -48,6 +49,8 @@ html {
     font-size: 100%;
 }
 ```
+
+No breakpoints have been set, font-size is set to 100%, which is equivilent to 16px;
 
 More TBC.
 

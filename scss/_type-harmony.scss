@@ -214,3 +214,35 @@ $harmonise-font-map: (
     }
   }
 }
+
+
+//////////////////////
+//
+// Churn out a specific font-size at all breakpoints listed in the base map in
+// REMs (with px fallback). This mixin is just a bit silly, but if you've
+// decided you want to declare font sizes in REMs then this makes sense for
+// consistency's sake (plus native zoomability, etc etc etc).
+//
+@mixin harmonise-fixed($font-size) {
+  $base: map_get($harmonise-font-map, base);
+
+  // Map = keyed properties.
+  @each $breakpoint, $properties in $base {
+    // Ensure properties is a map so we can work with it predictably.
+    $properties: prepare-properties($properties);
+    $root-font-size: map-get($properties, size);
+    $font-size-rems: strip-unit($font-size) / strip-unit($root-font-size);
+
+    @if $breakpoint {
+      @include breakpoint($breakpoint) {
+        font-size: $font-size + 0px; // Fallback. Should already be in px anyway.
+        font-size: $font-size-rems + 0rem;
+      }
+    } @else {
+      font-size: $font-size + 0px; // Fallback. Should already be in px anyway.
+      font-size: $font-size-rems + 0rem;
+    }
+  }
+
+}
+
