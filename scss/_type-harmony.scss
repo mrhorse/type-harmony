@@ -137,16 +137,32 @@ $harmonise-font-map: (
 
   @each $property, $value in $properties {
     $font-size-rems: strip-unit($value) / strip-unit($root-font-size);
+
+    // Size property - font-size.
     @if $property == size {
       @if $harmonise-use-px-fallback {
         font-size: $value + 0px; // Fallback. Should already be in px anyway.
       }
       font-size: $font-size-rems + 0rem;
+
+      // Spacing property - a multiplier of font-size and line-height.
+      @if $harmonise-set-vertical-rhythm AND $root-line-height AND map_has_key($properties, spacing)  {
+        $spacing: $font-size-rems * $root-line-height;
+        $multiplier: map_get($properties, spacing);
+
+        $spacing_rems: strip-unit($spacing * $multiplier);
+        @if $harmonise-use-px-fallback {
+          margin-bottom: $spacing_rems * $root-font-size + 0px;
+        }
+        margin-bottom: $spacing_rems + 0rem;
+      }
     }
+    // Leading property - line height.
     @if $property == leading {
       line-height: $value;
     }
-    // Add more properties maybe (e.g. veritcle rhythm, margin). Or maybe just keep it simple.
+    
+    // @TODO: Add more properties maybe (e.g. veritcle rhythm, margin). Or maybe just keep it simple.
   }
 }
 
