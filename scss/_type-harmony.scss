@@ -201,6 +201,8 @@ $harmonise-font-map: (
         @include populate-element-font-properties($properties, $breakpoint);
       }
     }
+  } @else {
+   @error('Element #{$element} not found in type-harmony font map.');
   }
 }
 
