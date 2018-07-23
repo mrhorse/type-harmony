@@ -1,6 +1,6 @@
 {
   "name": "type-harmony",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A responsive type foundation.",
   "main": "scss/_r-type.scss",
   "scripts": {
