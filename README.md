@@ -5,10 +5,10 @@ Type harmony exists (it really is a thing).
 Type harmony is a responsive typography foundation that adheres to the following standards:
 
 - Mobile first
-- Font sizes on the root element are declared in px and converted to %. This is good accessibility practice - working in absolute values overwrites the user default values, i.e. it works with native browser zoom.
-- Similarly font sizes are declared in px and converted to rems, with px fallback to support older browsers.
+- Font sizes on the root element are declared in px and then converted to %. This follows good accessibility practice as it allows users to apply their own text size in browser settings. Working in absolute values fixes the user default values and is not accessible.
+- Similarly font sizes are declared in px and converted to rems, with optional px fallback to support older browsers.
 - Line-heights are declared unitless, e.g. 1.4.
-- Vertical spacing may be added using the 'spacing' key.
+
 
 
 
@@ -20,7 +20,7 @@ Type harmony lists sass-breakpoint as a requirement (it's worth it). You'll also
 
 Install via `npm install type-harmony --save`
 
-Include in your scss via `@import "~type-harmony/scss/type-harmony";`.
+Include in your scss via `@import "~type-harmony/scss/type-harmony";` Replace ~ with path to node_modules if not using webpack.
 
 
 ## Usage
@@ -31,15 +31,27 @@ We start by defining a font map. Take for example the default map:
 $harmonise-font-map: (
   base: (
     null: 16px
-  )
+  ),
+  h1: (
+    null: (
+      size: 40px,
+      leading: 1.4
+    ),
+    768px: (
+      size: 46px,
+    ),
+  ),
 );
 
 ```
 
-The 'base' key of the map is to be applied to the root level element. In this example we can apply to our root (html) element as such:
+The 'base' key of the map is to be applied to the root level element. In this example we can apply to our root (html) element as such, along with an example h1:
 ```
 html {
-	@include $harmonise-roots();
+	@include harmonise-roots();
+}
+h1 {
+	@include harmonise-type(h1);
 }
 ```
 
@@ -48,18 +60,27 @@ This will result in the following output:
 html {
     font-size: 100%;
 }
+h1 {
+  font-size: 40px;
+  font-size: 2.5rem;
+  line-height: 1.4; 
+}
+@media (min-width: 768px) {
+  h1 {
+    font-size: 46px;
+    font-size: 2.70588rem;
+  } 
+}
 ```
 
-No breakpoints have been set, font-size is set to 100%, which is equivilent to 16px;
+Also available is a mixin: `@include harmonise-fixed(size)` - again size is declared in px. It is for one-off declarations that will output for each available breakpoint at a fixed px size in REM.
 
-More TBC.
-
-
-Mention...
-- Base breakpoints defining the breakpoints which will be used throughout.
-- Missing a breakpoint will result in inaccurate scaling at that breakpoint (no recalculation at new base font size)
-- Spacing as a multiple of font-size and line height
+Points to note:
+- Please use a MQ packer plugin in your scss pipeline to reduce superfluous css output.
+- Missing a breakpoint for a key will result in inaccurate scaling at that breakpoint (this is because there's would be no REM base recalculation at new base font size for that item)
+- Defining breakpoints in the base key will define the breakpoints which will be used throughout.
 
 
 TODO
 - Check this element's line-height before using the root line-height for vertical spacing.
+- Spacing (margin-bottom) as a multiple of font-size and line height [may not implement in an effort to not overcomplicate this library.]
