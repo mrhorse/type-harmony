@@ -75,7 +75,10 @@ h1 {
 
 Also available is a mixin: `@include harmonise-fixed(size)` - again size is declared in px. It is for one-off declarations that will output for each available breakpoint at a fixed px size in REM.
 
+
+
 Points to note:
+- Remove PX fallback from output by setting var `$harmonise-use-px-fallback` to false.
 - Please use a MQ packer plugin in your scss pipeline to reduce superfluous css output.
 - Missing a breakpoint for a key will result in inaccurate scaling at that breakpoint (this is because there's would be no REM base recalculation at new base font size for that item)
 - Defining breakpoints in the base key will define the breakpoints which will be used throughout.
