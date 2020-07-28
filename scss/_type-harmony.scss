@@ -146,7 +146,7 @@ $harmonise-font-map: (
       font-size: $font-size-rems + 0rem;
 
       // Spacing property - a multiplier of font-size and line-height.
-      @if $harmonise-set-vertical-rhythm AND $root-line-height AND map_has_key($properties, spacing)  {
+      @if $harmonise-set-vertical-rhythm and $root-line-height and map_has_key($properties, spacing)  {
         $spacing: $font-size-rems * $root-line-height;
         $multiplier: map_get($properties, spacing);
 
